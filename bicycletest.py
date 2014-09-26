@@ -2,19 +2,34 @@
 import bicycle as bk
 from random import randint
 
-bike1 = bk.Bike("Trek Silque", 30, 200)
-bike2 = bk.Bike("Surly Long Haul Trucker", 50, 700)
-bike3 = bk.Bike("Schwinn Fastback", 15, 300)
-bike4 = bk.Bike("Huffy Highland", 20, 50)
-bike5 = bk.Bike("Diamondback Overdrive", 30, 450)
-bike6 = bk.Bike("Shimano Deore", 25, 125)
+#Create parts
+wald = bk.Wheel("Wald",5,5)
+avenir = bk.Wheel("Avenir", 3, 10)
+sta_tru = bk.Wheel("Sta-Tru",1, 25)
+
+alum = bk.Frame('a')
+carb = bk.Frame('c')
+steel = bk.Frame('s')
+
+#Create Manufacturers
+trek = bk.BikeManufacturer("Trek", 0.15)
+huffy = bk.BikeManufacturer("Huffy", 0.05)
+
+#Build Bikes
+
+bike1 = trek.add_model("Silque",avenir,steel)
+bike2 = trek.add_model("Lightning",sta_tru,carb)
+bike3 = trek.add_model("Overland",wald,steel)
+bike4 = huffy.add_model("Roadster",wald,alum)
+bike5 = huffy.add_model("Uptown",avenir,alum)
+bike6 = huffy.add_model("Moderno",sta_tru,steel)
+
 bikelist = [bike1,bike2,bike3,bike4,bike5,bike6]
 
 #Set up Shop
 shop = bk.BikeShop("Ridin' Dirty")
 for bike in bikelist:
-    for i in xrange(randint(1,5)): #add a random number of bikes to inventory, 1 to 5
-        shop.add_bike(bike)
+    shop.add_bike(bike)
     shop.add_price(bike)
 
 cust1 = bk.Customer("Daenerys", 200)
@@ -31,7 +46,7 @@ shop.status()
 
 #Sell bikes
 cust1.buy_bike(shop, bike4)
-cust2.buy_bike(shop, bike3)
+cust2.buy_bike(shop, bike1)
 cust3.buy_bike(shop, bike2)
 
 #New inventory and profit

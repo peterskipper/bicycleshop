@@ -1,12 +1,45 @@
 #Definition of classes
 
-class Bike(object):
-    def __init__(self, model, weight, expense):
+class Wheel(object):
+    def __init__(self,model, weight, expense):
         self.model = model
         self.weight = weight
         self.expense = expense
-    def stats(self):
-        return (self.model,self.weight,self.expense)
+
+class Frame(object):
+    def __init__(self, material):
+        if material[0].lower() in ["a","c","s"]:
+            self.material = material[0].lower()
+        else:
+            print "A frame must be aluminum (a), carbon (c) or steel (s)"
+            return
+        if self.material == 'a':
+            self.weight = 30
+            self.expense = 75
+        elif self.material == 's':
+            self.weight = 20
+            self.expense = 200
+        else: #material is 'c', carbon
+            self.weight = 10
+            self.expense = 500
+
+class BikeManufacturer(object):
+    def __init__(self, name, markup):
+        self.name = name
+        self.markup = markup
+    def add_model(self, model, wheel, frame):
+        bike = Bike(model,wheel,frame,self.name)
+        bike.expense += bike.expense * self.markup # add in the manuf's cut
+        return bike
+
+class Bike(object):
+    def __init__(self, model, wheel, frame, manufacturer):
+        self.model = manufacturer + " " + model
+        self.wheel = wheel
+        self.frame = frame
+        self.manufacturer = manufacturer
+        self.weight = 2 * wheel.weight + frame.weight
+        self.expense = 2 * wheel.expense + frame.expense
 
 class BikeShop(object):
     markup = 0.2
@@ -14,8 +47,9 @@ class BikeShop(object):
         self.name = name
         self.inventory = {}
         self.pricelist = {}
-        self.profit = 0
+        self.bankaccount = 0
     def add_bike(self, bike):
+        self.bankaccount -= bike.expense
         if bike.model in self.inventory:
             self.inventory[bike.model] += 1
         else:
@@ -28,13 +62,14 @@ class BikeShop(object):
             return
         else:
             self.inventory[bike.model] -= 1
-            self.profit += self.markup * bike.expense
+            self.bankaccount += self.pricelist[bike.model]
     def status(self):
         print self.name + " has the following inventory:\n"
         for model in self.inventory:
             print model + ": " + str(self.inventory[model])
-        print "\n" + self.name + " has made $" + "{:.2f}".format(self.profit) + " today."
+        print "\n" + self.name + " has made $" + "{:.2f}".format(self.bankaccount) + " today."
         print #get a new line
+
 class Customer(object):
     def __init__(self, name, fund):
         self.name = name
